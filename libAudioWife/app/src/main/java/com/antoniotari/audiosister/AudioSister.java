@@ -5,15 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.antoniotari.audiosister.models.Song;
+
 import java.lang.ref.WeakReference;
 
 import nl.changer.audiowife.AudioWife;
+import nl.changer.audiowife.NotificationControlsListener;
 import nl.changer.audiowife.WifeService;
 
 /**
@@ -28,14 +32,14 @@ public class AudioSister {
     private WeakReference<TextView> weakElapsedTime;
     private WeakReference<SeekBar> weakSeekBar;
     private String playUrl;
-    private String currentNotificationText="";
+    private Song currentSong;
     private int currentDurationSeconds = -1;
     private Class currentActivityClass;
     private int currentForegroundDrawable;
     private MediaPlayer.OnCompletionListener completionListener;
     private AudioSisterListener audioSisterListener;
 
-    private AudioSister(){
+    private AudioSister() {
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -102,19 +106,19 @@ public class AudioSister {
         }
     }
 
-    public void playNew(String streamUrl, String notificationText, int durationSeconds) {
+    public void playNew(String streamUrl, Song song, int durationSeconds) {
         if(wifeService!=null) {
-            currentNotificationText = notificationText;
+            currentSong = song;
             currentDurationSeconds = durationSeconds;
             playUrl = streamUrl;
             initializeWifeService();
-            wifeService.play(currentActivityClass, currentNotificationText, currentDurationSeconds, currentForegroundDrawable);
+            wifeService.play(currentActivityClass, song, currentDurationSeconds, currentForegroundDrawable);
         }
     }
 
     public void playCurrent(){
         if(wifeService!=null) {
-            wifeService.play(currentActivityClass, currentNotificationText, currentDurationSeconds, currentForegroundDrawable);
+            wifeService.play(currentActivityClass, currentSong, currentDurationSeconds, currentForegroundDrawable);
         }
     }
 
@@ -138,12 +142,15 @@ public class AudioSister {
         }
     }
 
+    public void setNotificationControlsListener(NotificationControlsListener notificationControlsListener) {
+        wifeService.setNotificationControlsListener(notificationControlsListener);
+    }
     public String getPlayUrl(){
         return playUrl;
     }
 
-    public String getCurrentNotificationText() {
-        return currentNotificationText;
+    public Song getCurrentNotificationText() {
+        return currentSong;
     }
 
     public void setCurrentForegroundDrawable(int currentForegroundDrawable) {

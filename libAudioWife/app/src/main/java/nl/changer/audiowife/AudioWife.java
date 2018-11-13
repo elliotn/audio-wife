@@ -153,6 +153,7 @@ public class AudioWife{
 	 * played.
 	 ****/
 	public void play() {
+		Log.e( "MediaPlayerService", "AudioWife Play");
 
 		// if play button itself is null, the whole purpose of AudioWife is
 		// defeated.
@@ -180,7 +181,7 @@ public class AudioWife{
 		mMediaPlayer.start();
 		setPausable();
 
-        if(foregroundNotificationListener!=null){
+        if(foregroundNotificationListener!=null) {
             foregroundNotificationListener.addForeground();
         }
 	}
@@ -670,7 +671,6 @@ public class AudioWife{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		mMediaPlayer.setOnCompletionListener(mOnCompletion);
 	}
 
@@ -792,9 +792,10 @@ public class AudioWife{
 
 	private void registerMediaButtonHandler(final Context context) {
 		if (mediaButtonHandler != null) {
-			return;
+            return;
 		}
-		mediaButtonHandler = new Handler();
+
+        mediaButtonHandler = new Handler();
 		HeadsetActionButtonReceiver.delegate = new HeadsetActionButtonReceiver.Delegate() {
 			@Override
 			public void onMediaButtonSingleClick() {
@@ -855,7 +856,8 @@ public class AudioWife{
 				}
 			}
 		};
-		HeadsetActionButtonReceiver.register(context);
+
+        HeadsetActionButtonReceiver.register(context);
 	}
 
 	private void unregisterMediaButtonHandler() {
